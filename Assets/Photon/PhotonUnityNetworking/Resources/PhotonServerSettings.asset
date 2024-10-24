@@ -44,6 +44,9 @@ MonoBehaviour:
   - RPC_OnDeadZoneEnter
   - RPC_OnPlayerDied
   - RPC_DeadZoneDeath
+  - SyncLaserLine
+  - SyncRotation
+  - SyncViewToggle
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

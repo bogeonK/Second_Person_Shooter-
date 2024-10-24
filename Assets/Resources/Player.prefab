@@ -1063,13 +1063,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3699031511433501969}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.0044806004, y: -0.0712174, z: -0.000000059604645, w: 0.9974508}
   m_LocalPosition: {x: 0.0037, y: 0.5131, z: 0.4054}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3752621844304220274}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.512, y: -8.168, z: -0.037}
 --- !u!1 &3740004225913410681
 GameObject:
   m_ObjectHideFlags: 0
@@ -1305,7 +1305,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4564447717487512264}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5983941, y: 0.37674224, z: 0.37672892, w: 0.5983854}
+  m_LocalRotation: {x: -0.58732766, y: 0.3615502, z: 0.39166063, w: 0.60903996}
   m_LocalPosition: {x: 0.2729339, y: 0.4130587, z: 0.15323131}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1319,7 +1319,7 @@ Transform:
   - {fileID: 4990328958295162086}
   - {fileID: 2797090243691756706}
   m_Father: {fileID: 3466872482152974617}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 86.4}
+  m_LocalEulerAnglesHint: {x: -86.992, y: -22.011, z: 86.399}
 --- !u!1 &4775710266123683945
 GameObject:
   m_ObjectHideFlags: 0
@@ -1585,6 +1585,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   jumpPower: 3
+  lookSpeed: 2
+  lookXLimit: 45
+  cameraXOffset: 0.4
+  cameraYOffset: 1.83
+  cameraZOffset: 0.5
+  rotationX: 0
+  laserLength: 10
+  laserColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &2267536348520186364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1749,6 +1757,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 1
     Name: isJump
+  - Type: 9
+    SynchronizeType: 0
+    Name: dead
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
