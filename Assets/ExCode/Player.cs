@@ -11,6 +11,8 @@ public class Player : MonoBehaviourPunCallbacks
     private bool hasViewSwitched = false; // 시점변혼이 이루어졌는지 여부
     private float viewSwitchDelay = 5f; // 시점변환 시점
 
+    public Transform firePoint; // 레이저가 발사되는 지점
+
     // 이동 속도
     public float moveSpeed;
     public float jumpPower; // 점프하는 힘
@@ -184,8 +186,8 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (pv.IsMine)
         {
-            Vector3 start = playerCamera.transform.position;
-            Vector3 end = start + playerCamera.transform.forward * laserLength;
+            Vector3 start = firePoint.position;
+            Vector3 end = start + firePoint.forward * laserLength;
 
             laserLine.SetPosition(0, start);
             laserLine.SetPosition(1, end);
