@@ -51,6 +51,8 @@ MonoBehaviour:
   - StartCountdown
   - UpdateCountdownText
   - StartCountdownOnAllClients
+  - ToggleViewOnAllClients
+  - ExecuteToggleViewOnAllClients
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

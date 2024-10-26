@@ -14,7 +14,7 @@ public class Player : MonoBehaviourPunCallbacks
     private Player otherPlayer; // 다른 플레이어 저장 변수
     private bool isViewingOther = false; // 다른플레이어 존재 여부
     private bool hasViewSwitched = false; // 시점변혼이 이루어졌는지 여부
-    private float viewSwitchDelay = 1f; // 시점변환 시점
+    private float viewSwitchDelay = 4f; // 시점변환 시점
 
     public Transform firePoint; // 레이저가 발사되는 지점
 
@@ -90,7 +90,7 @@ public class Player : MonoBehaviourPunCallbacks
             // 플레이어가 두 명이 아닐 때 "다른 플레이어를 기다리는 중..." 메시지 표시
             if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && countdownText != null)
             {
-                countdownText.text = "Waiting for other players...";
+                countdownText.text = "Waiting for Player...";
                 countdownText.gameObject.SetActive(true);
             }
 
@@ -121,7 +121,7 @@ public class Player : MonoBehaviourPunCallbacks
     // 새로운 플레이어가 방에 들어왔을 때 호출됩니다.
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-        // 플레이어가 두 명이 되면 카운트다운 시작
+        // 플레이어가 두 명이 되고 카운트다운이 시작되지 않았을 때만 실행
         if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 2 && !isCountdownStarted)
         {
             if (countdownText != null)
@@ -173,7 +173,6 @@ public class Player : MonoBehaviourPunCallbacks
 
         // 게임 재개
         Time.timeScale = 1f;
-
     }
 
     [PunRPC]
@@ -253,14 +252,14 @@ public class Player : MonoBehaviourPunCallbacks
     private void OnCollisionEnter(Collision collision)
     {
         // 충돌한 물체의 태그가 "Ground"이고, 내 캐릭터일 때만
-        if(collision.gameObject.tag == "Ground" && pv.IsMine)
+        if (collision.gameObject.tag == "Ground" && pv.IsMine)
         {
             //  점프 횟수 초기화
             jumpCount = 0;
 
             // 점프 애니메이션 종료
             anim.SetBool("isJump", false);
-           
+
         }
     }
 

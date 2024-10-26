@@ -13,8 +13,25 @@ public class PlaySceneManager : MonoBehaviourPunCallbacks
         // 현재 방에 참여한 플레이어 인원
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
-        // 특정 회전 값을 사용하여 플레이어 생성
-        Quaternion playerRotation = Quaternion.Euler(0, 0, 0);
+        // 각 플레이어의 회전 값 설정
+        Quaternion playerRotation;
+
+        // 플레이어 인원에 따라 다른 스폰 위치와 회전 설정
+        if (playerCount == 1)
+        {
+            // 첫 번째 플레이어는 정면(0도)을 바라봄
+            playerRotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (playerCount == 2)
+        {
+            // 두 번째 플레이어는 뒤쪽(180도)을 바라봄
+            playerRotation = Quaternion.Euler(0, 180, 0);
+        }
+        else
+        {
+            // 기본값 설정 (다른 인원이 추가될 경우)
+            playerRotation = Quaternion.Euler(0, 0, 0);
+        }
 
         // 플레이어 인원에 따라 다른 스폰 위치에 플레이어 생성 (1명이면 0번, 2명이면 1번)
         PhotonNetwork.Instantiate("Player", playerSpawnPoints[playerCount - 1].position, playerRotation);
