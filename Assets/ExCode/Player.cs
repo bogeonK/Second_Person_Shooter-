@@ -6,10 +6,15 @@ using Photon.Pun;
 
 public class Player : MonoBehaviourPunCallbacks
 {
+    // 카운트다운 관련 변수
+    public Text countdownText;              // 카운트다운 텍스트 UI
+    private bool isCountdownStarted = false;
+
+
     private Player otherPlayer; // 다른 플레이어 저장 변수
     private bool isViewingOther = false; // 다른플레이어 존재 여부
     private bool hasViewSwitched = false; // 시점변혼이 이루어졌는지 여부
-    private float viewSwitchDelay = 5f; // 시점변환 시점
+    private float viewSwitchDelay = 1f; // 시점변환 시점
 
     public Transform firePoint; // 레이저가 발사되는 지점
 
@@ -58,6 +63,7 @@ public class Player : MonoBehaviourPunCallbacks
         // 내 캐릭터 일때만 실행
         if (pv.IsMine)
         {
+
             // Canvas 검색해서 가져오기
             canvas = GameObject.Find("Canvas").transform;
 
@@ -68,6 +74,33 @@ public class Player : MonoBehaviourPunCallbacks
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             StartCoroutine(AutoSwitchViewAfterDelay());
+
+
+            // 카운트다운 텍스트 찾기
+            GameObject countdownObj = GameObject.Find("CountdownText");
+            if (countdownObj != null)
+            {
+                countdownText = countdownObj.GetComponent<Text>();
+            }
+            else
+            {
+                Debug.LogError("CountdownText 오브젝트를 찾을 수 없습니다!");
+            }
+
+            // 플레이어가 두 명이 아닐 때 "다른 플레이어를 기다리는 중..." 메시지 표시
+            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && countdownText != null)
+            {
+                countdownText.text = "Waiting for other players...";
+                countdownText.gameObject.SetActive(true);
+            }
+
+            if (!isCountdownStarted)
+            {
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+                {
+                    StartCoroutine(StartCountdown());
+                }
+            }
 
         }
         else
@@ -83,6 +116,83 @@ public class Player : MonoBehaviourPunCallbacks
         laserLine.startColor = laserColor;
         laserLine.endColor = laserColor;
         laserLine.positionCount = 2;
+    }
+
+    // 새로운 플레이어가 방에 들어왔을 때 호출됩니다.
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        // 플레이어가 두 명이 되면 카운트다운 시작
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 2 && !isCountdownStarted)
+        {
+            if (countdownText != null)
+            {
+                countdownText.gameObject.SetActive(false); // 대기 메시지 숨기기
+            }
+
+            // 카운트다운이 시작되었음을 표시
+            isCountdownStarted = true;
+
+            // 마스터 클라이언트가 모든 클라이언트에게 카운트다운 시작 신호를 보냅니다.
+            photonView.RPC("StartCountdownOnAllClients", RpcTarget.All);
+        }
+    }
+
+    // 모든 클라이언트에서 카운트다운을 시작하는 RPC 메서드
+    [PunRPC]
+    private void StartCountdownOnAllClients()
+    {
+        if (!isCountdownStarted)
+        {
+            StartCoroutine(StartCountdown());
+        }
+    }
+
+    // 카운트다운 코루틴
+    private IEnumerator StartCountdown()
+    {
+        isCountdownStarted = true;
+
+        // 게임 일시정지
+        Time.timeScale = 0f;
+
+        int countdown = 3;
+        while (countdown > 0)
+        {
+            // 모든 클라이언트에서 카운트다운 업데이트
+            photonView.RPC("UpdateCountdownText", RpcTarget.All, countdown.ToString());
+            yield return new WaitForSecondsRealtime(1);
+            countdown--;
+        }
+
+        // "GO!" 표시
+        photonView.RPC("UpdateCountdownText", RpcTarget.All, "GO!");
+        yield return new WaitForSecondsRealtime(1);
+
+        // 카운트다운 텍스트 숨기기
+        photonView.RPC("HideCountdownText", RpcTarget.All);
+
+        // 게임 재개
+        Time.timeScale = 1f;
+
+    }
+
+    [PunRPC]
+    private void UpdateCountdownText(string text)
+    {
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(true);
+            countdownText.text = text;
+        }
+    }
+
+    [PunRPC]
+    private void HideCountdownText()
+    {
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -256,5 +366,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         isViewingOther = isViewing;
     }
+
 
 }
