@@ -23,7 +23,7 @@ public class Server : MonoBehaviourPunCallbacks // Æ÷Åæ °ü·Ã ÄÝ¹é ÇÔ¼ö¸¦ »ó¼Ó¹Þ±
 
         // ¼­¹ö Á¢¼Ó ½Ãµµ
         PhotonNetwork.ConnectUsingSettings();
-        connectInfoTxt.text = "¼­¹ö Á¢¼Ó Áß...";
+        connectInfoTxt.text = "Server Loading...";
 
     }
 
@@ -31,7 +31,7 @@ public class Server : MonoBehaviourPunCallbacks // Æ÷Åæ °ü·Ã ÄÝ¹é ÇÔ¼ö¸¦ »ó¼Ó¹Þ±
     void OnClickStart()
     {
         PhotonNetwork.JoinLobby();  // ·Îºñ Á¢¼Ó ½Ãµµ
-        connectInfoTxt.text = "·Îºñ Á¢¼Ó Áß...";
+        connectInfoTxt.text = "Lobby Loading...";
     }
 
     // ¼­¹ö Á¢¼Ó¿¡ ¼º°øÇÏ¸é È£Ãâ
@@ -39,7 +39,7 @@ public class Server : MonoBehaviourPunCallbacks // Æ÷Åæ °ü·Ã ÄÝ¹é ÇÔ¼ö¸¦ »ó¼Ó¹Þ±
     {
         // ½ÃÀÛ ¹öÆ° È°¼ºÈ­
         startBtn.interactable = true;
-        connectInfoTxt.text = "¼­¹ö Á¢¼Ó ¼º°ø!";
+        connectInfoTxt.text = "complete!";
     }
 
     // ·Îºñ Á¢¼Ó¿¡ ¼º°øÇÏ¸é È£Ãâ
@@ -48,7 +48,7 @@ public class Server : MonoBehaviourPunCallbacks // Æ÷Åæ °ü·Ã ÄÝ¹é ÇÔ¼ö¸¦ »ó¼Ó¹Þ±
         // ·Îºñ È­¸éÀ¸·Î ÀüÈ¯
         gameObject.SetActive(false);
         lobby.SetActive(true);
-        connectInfoTxt.text = "·Îºñ Á¢¼Ó ¼º°ø!";
+        connectInfoTxt.text = "complete!";
 
     }
 
