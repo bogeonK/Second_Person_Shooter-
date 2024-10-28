@@ -488,7 +488,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ce1dc24c4233aa34aaf62a939cace740, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8580f26912ad8f5489f59831f3915d2c, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1187,7 +1187,7 @@ GameObject:
   - component: {fileID: 972942371}
   - component: {fileID: 972942370}
   m_Layer: 5
-  m_Name: Edge (1)
+  m_Name: Edge (1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1533,7 +1533,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ce1dc24c4233aa34aaf62a939cace740, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8580f26912ad8f5489f59831f3915d2c, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2086,7 +2086,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cf1cf849a530c2744aa1388fb16a2faf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: caacace9dc17fda4fa51efb6e0dda5a4, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2397,7 +2397,7 @@ GameObject:
   - component: {fileID: 1872380050}
   - component: {fileID: 1872380049}
   m_Layer: 5
-  m_Name: Edge (3)
+  m_Name: Edge (3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2472,7 +2472,7 @@ GameObject:
   - component: {fileID: 1874011610}
   - component: {fileID: 1874011609}
   m_Layer: 5
-  m_Name: Edge (2)
+  m_Name: Edge (2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
