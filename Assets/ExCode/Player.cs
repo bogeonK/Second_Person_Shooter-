@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using UnityEngine.U2D;
 
 public class Player : MonoBehaviourPunCallbacks
 {
@@ -10,6 +11,7 @@ public class Player : MonoBehaviourPunCallbacks
     public Text countdownText;              // 카운트다운 텍스트 UI
     private bool isCountdownStarted = false;
 
+    private Transform spineBone; 
 
     private Player otherPlayer; // 다른 플레이어 저장 변수
     private bool isViewingOther = false; // 다른플레이어 존재 여부
@@ -26,7 +28,7 @@ public class Player : MonoBehaviourPunCallbacks
     public float lookSpeed; // 카메라 회전 속도
     public float lookXLimit; // 상하 회전 각도 제한
     public float cameraXOffset = 1.2f; // 카메라 양옆 제한
-    public float cameraYOffset = 1.2f; // 카메라 위치 높이 제한
+    public float cameraYOffset = 1.2f; // 카메라 높이 제한
     public float cameraZOffset = 1.2f; // 카메라 앞뒤 제한
     public float rotationX = 0;
 
@@ -54,6 +56,9 @@ public class Player : MonoBehaviourPunCallbacks
         rb = GetComponent<Rigidbody>();
         pv = GetComponent<PhotonView>();
         anim = GetComponent<Animator>();
+
+        // 척추 본 가져오기
+        spineBone = anim.GetBoneTransform(HumanBodyBones.Spine);
 
         // 카메라 생성 및 설정
         playerCamera = new GameObject("PlayerCamera").AddComponent<Camera>();
@@ -262,6 +267,17 @@ public class Player : MonoBehaviourPunCallbacks
 
         }
     }
+    void LateUpdate()
+    {
+        if (spineBone != null)
+        {
+            // 카메라 피치를 기반으로 X축 주위로 회전 생성
+            Quaternion spineRotation = Quaternion.Euler(-rotationX, 0, 0);
+
+            // 애니메이션을 보존하기 위해 현재 로컬 회전과 결합
+            spineBone.localRotation = spineRotation * spineBone.localRotation;
+        }
+    }
 
     private void HandleMouseInput()
     {
@@ -286,7 +302,6 @@ public class Player : MonoBehaviourPunCallbacks
         if (!pv.IsMine)
         {
             rotationX = rotX;
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation = bodyRotation;
         }
     }

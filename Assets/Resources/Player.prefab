@@ -1451,8 +1451,8 @@ MonoBehaviour:
   lookSpeed: 2
   lookXLimit: 45
   cameraXOffset: 0.3
-  cameraYOffset: 2
-  cameraZOffset: 0.56
+  cameraYOffset: 1.9
+  cameraZOffset: 0.9
   rotationX: 0
   laserLength: 10
   laserColor: {r: 1, g: 0, b: 0, a: 1}
