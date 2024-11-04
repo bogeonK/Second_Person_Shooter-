@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.3129522, g: 0.29360527, b: 0.5140388, a: 1}
+  m_IndirectSpecularColor: {r: 0.31295627, g: 0.29360428, b: 0.51404035, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -560,6 +560,8 @@ MonoBehaviour:
   playerSpawnPoints:
   - {fileID: 1006842840}
   - {fileID: 454285342}
+  statusText: {fileID: 2009011523}
+  countdownText: {fileID: 2009011523}
 --- !u!4 &53495093
 Transform:
   m_ObjectHideFlags: 0

@@ -1,21 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
-using UnityEngine.U2D;
 
 public class Player : MonoBehaviourPunCallbacks
 {
-    // 카운트다운 관련 변수
-    public Text countdownText;              // 카운트다운 텍스트 UI
-    private bool isCountdownStarted = false;
 
-    private Transform spineBone; 
+    private Transform spineBone; // 척추본 불러오기
+    private bool hasCoroutineStarted = false;  // 코루틴 여러번 실행 방지
 
     private Player otherPlayer; // 다른 플레이어 저장 변수
     private bool isViewingOther = false; // 다른플레이어 존재 여부
-    private bool hasViewSwitched = false; // 시점변혼이 이루어졌는지 여부
+    private bool hasViewSwitched = false; // 시점변환이 이루어졌는지 여부
     private float viewSwitchDelay = 4f; // 시점변환 시점
 
     public Transform firePoint; // 레이저가 발사되는 지점
@@ -78,33 +74,12 @@ public class Player : MonoBehaviourPunCallbacks
             playerCamera.gameObject.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            StartCoroutine(AutoSwitchViewAfterDelay());
 
-
-            // 카운트다운 텍스트 찾기
-            GameObject countdownObj = GameObject.Find("CountdownText");
-            if (countdownObj != null)
+            // 이 플레이어가 입장할 때 플레이어 수가 2명인 경우 확인
+            if (PhotonNetwork.PlayerList.Length == 2 && !hasCoroutineStarted)
             {
-                countdownText = countdownObj.GetComponent<Text>();
-            }
-            else
-            {
-                Debug.LogError("CountdownText 오브젝트를 찾을 수 없습니다!");
-            }
-
-            // 플레이어가 두 명이 아닐 때 "다른 플레이어를 기다리는 중..." 메시지 표시
-            if (PhotonNetwork.CurrentRoom.PlayerCount < 2 && countdownText != null)
-            {
-                countdownText.text = "Waiting for Player...";
-                countdownText.gameObject.SetActive(true);
-            }
-
-            if (!isCountdownStarted)
-            {
-                if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
-                {
-                    StartCoroutine(StartCountdown());
-                }
+                StartCoroutine(AutoSwitchViewAfterDelay());
+                hasCoroutineStarted = true;
             }
 
         }
@@ -123,81 +98,6 @@ public class Player : MonoBehaviourPunCallbacks
         laserLine.positionCount = 2;
     }
 
-    // 새로운 플레이어가 방에 들어왔을 때 호출됩니다.
-    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
-    {
-        // 플레이어가 두 명이 되고 카운트다운이 시작되지 않았을 때만 실행
-        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 2 && !isCountdownStarted)
-        {
-            if (countdownText != null)
-            {
-                countdownText.gameObject.SetActive(false); // 대기 메시지 숨기기
-            }
-
-            // 카운트다운이 시작되었음을 표시
-            isCountdownStarted = true;
-
-            // 마스터 클라이언트가 모든 클라이언트에게 카운트다운 시작 신호를 보냅니다.
-            photonView.RPC("StartCountdownOnAllClients", RpcTarget.All);
-        }
-    }
-
-    // 모든 클라이언트에서 카운트다운을 시작하는 RPC 메서드
-    [PunRPC]
-    private void StartCountdownOnAllClients()
-    {
-        if (!isCountdownStarted)
-        {
-            StartCoroutine(StartCountdown());
-        }
-    }
-
-    // 카운트다운 코루틴
-    private IEnumerator StartCountdown()
-    {
-        isCountdownStarted = true;
-
-        // 게임 일시정지
-        Time.timeScale = 0f;
-
-        int countdown = 3;
-        while (countdown > 0)
-        {
-            // 모든 클라이언트에서 카운트다운 업데이트
-            photonView.RPC("UpdateCountdownText", RpcTarget.All, countdown.ToString());
-            yield return new WaitForSecondsRealtime(1);
-            countdown--;
-        }
-
-        // "GO!" 표시
-        photonView.RPC("UpdateCountdownText", RpcTarget.All, "GO!");
-        yield return new WaitForSecondsRealtime(1);
-
-        // 카운트다운 텍스트 숨기기
-        photonView.RPC("HideCountdownText", RpcTarget.All);
-
-        // 게임 재개
-        Time.timeScale = 1f;
-    }
-
-    [PunRPC]
-    private void UpdateCountdownText(string text)
-    {
-        if (countdownText != null)
-        {
-            countdownText.gameObject.SetActive(true);
-            countdownText.text = text;
-        }
-    }
-
-    [PunRPC]
-    private void HideCountdownText()
-    {
-        if (countdownText != null)
-        {
-            countdownText.gameObject.SetActive(false);
-        }
-    }
 
     // Update is called once per frame
     void Update()
@@ -212,9 +112,9 @@ public class Player : MonoBehaviourPunCallbacks
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
-        // 카메라의 방향을 기준으로 이동 방향 설정
-        Vector3 forward = playerCamera.transform.forward;
-        Vector3 right = playerCamera.transform.right;
+        // 캐릭터의 방향을 기준으로 이동 방향 설정
+        Vector3 forward = transform.forward;
+        Vector3 right = transform.right;
 
         // 수직 이동과 수평 이동 벡터 계산
         Vector3 dir = (forward * v) + (right * h);
@@ -222,9 +122,6 @@ public class Player : MonoBehaviourPunCallbacks
 
         // 모든 방향의 속도가 동일하도록 정규화
         dir.Normalize();
-
-        // 이동할 방향에 원하는 속도 곱하기 (모든 기기에서 동일한 속도)
-        // transform.position += dir * moveSpeed * Time.deltaTime;
 
         // 물리 작용을 이용해 적용
         rb.MovePosition(rb.position + (dir * moveSpeed * Time.deltaTime));
@@ -328,6 +225,18 @@ public class Player : MonoBehaviourPunCallbacks
         laserLine.SetPosition(1, end);
     }
 
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        if (pv.IsMine)
+        {
+            if (PhotonNetwork.PlayerList.Length == 2 && !hasCoroutineStarted)
+            {
+                StartCoroutine(AutoSwitchViewAfterDelay());
+                hasCoroutineStarted = true;
+            }
+        }
+    }
+
     private IEnumerator AutoSwitchViewAfterDelay()
     {
         yield return new WaitForSeconds(viewSwitchDelay);
@@ -357,22 +266,19 @@ public class Player : MonoBehaviourPunCallbacks
 
             if (otherPlayer != null)
             {
-                playerCamera.gameObject.SetActive(false);
-                otherPlayer.playerCamera.gameObject.SetActive(true);
-                // 레이저 라인은 계속 활성화 상태를 유지
+                // 자신의 카메라를 다른 플레이어의 위치로 이동
+                playerCamera.transform.SetParent(otherPlayer.transform);
+                playerCamera.transform.localPosition = new Vector3(cameraXOffset, cameraYOffset, cameraZOffset);
+                playerCamera.transform.localRotation = Quaternion.identity;
             }
         }
         else
         {
-            playerCamera.gameObject.SetActive(true);
-            if (otherPlayer != null)
-            {
-                otherPlayer.playerCamera.gameObject.SetActive(false);
-            }
+            // 카메라를 자신의 캐릭터로 복귀
+            playerCamera.transform.SetParent(this.transform);
+            playerCamera.transform.localPosition = new Vector3(cameraXOffset, cameraYOffset, cameraZOffset);
+            playerCamera.transform.localRotation = Quaternion.identity;
         }
-
-        // 시점 전환 시 네트워크로 동기화
-        photonView.RPC("SyncViewToggle", RpcTarget.All, isViewingOther);
     }
 
     [PunRPC]
