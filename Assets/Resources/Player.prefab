@@ -1455,6 +1455,7 @@ MonoBehaviour:
   rotationX: 0
   laserLength: 10
   laserColor: {r: 1, g: 0, b: 0, a: 1}
+  playerCamera: {fileID: 0}
 --- !u!114 &4258971433716879413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1486,6 +1487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpBar_World: {fileID: 854189400606192683}
   hp: 100
+  playerCamera: {fileID: 0}
 --- !u!114 &7624762355872008000
 MonoBehaviour:
   m_ObjectHideFlags: 0

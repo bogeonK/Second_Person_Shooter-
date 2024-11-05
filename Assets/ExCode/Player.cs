@@ -38,7 +38,7 @@ public class Player : MonoBehaviourPunCallbacks
     PhotonView pv;  // 플레이어의 PhotonView 컴포넌트
     Rigidbody rb; // 플레이어의 Rigidbody 컴포넌트
     Animator anim; // 플레이어의 Animator 컴포넌트
-    Camera playerCamera; // 카메라 컴포넌트
+    public Camera playerCamera; // 카메라 컴포넌트
     private LineRenderer laserLine;
 
     // 캔버스 오브젝트

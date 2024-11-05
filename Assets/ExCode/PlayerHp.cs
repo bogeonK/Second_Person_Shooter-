@@ -19,13 +19,23 @@ public class PlayerHp : MonoBehaviour
     // 플레이어의 체력바 (화면)
     Slider hpBar_Screen;
     // 캔버스 오브젝트
-    Transform canvas;  
+    Transform canvas;
+
+    public Camera playerCamera;  // playerCamera 변수
+
 
     // Start is called before the first frame update
     void Start()
     {
         pv = GetComponent<PhotonView>();
         anim = GetComponent<Animator>();
+
+        // Player 스크립트를 찾아 playerCamera 가져오기
+        Player playerScript = GetComponent<Player>();
+        if (playerScript != null)
+        {
+            playerCamera = playerScript.playerCamera;
+        }
 
         // 내 캐릭터일 때만 실행
         if (pv.IsMine)
@@ -195,7 +205,12 @@ public class PlayerHp : MonoBehaviour
         // 플레이어 기능 중단
         GetComponent<Player>().enabled = false;
         GetComponent<PlayerShoot>().enabled = false;
-        GetComponentInChildren<Camera>().enabled = false;
+
+        // playerCamera 비활성화
+        if (playerCamera != null)
+        {
+            playerCamera.enabled = false;  // 카메라 비활성화
+        }
 
         // 엔딩 이후의 기능 실행
         StartCoroutine(FindObjectOfType<PlaySceneManager>().AfterEnding());
