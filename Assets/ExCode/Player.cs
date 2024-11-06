@@ -180,15 +180,22 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (pv.IsMine)
         {
+            // rotationX는 항상 업데이트하여 척추 뼈 회전에 사용
             float mouseY = -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX += mouseY;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
 
+            // 시점이 전환되지 않았을 때만 카메라의 로컬 회전 적용
+            if (!isViewingOther)
+            {
+                playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            }
+
+            // 좌우 회전은 항상 적용
             float mouseX = Input.GetAxis("Mouse X") * lookSpeed;
             transform.rotation *= Quaternion.Euler(0, mouseX, 0);
 
-            // 시점 변경 중에도 자신의 캐릭터 회전을 네트워크로 동기화
+            // 회전 값을 네트워크로 동기화
             photonView.RPC("SyncRotation", RpcTarget.All, rotationX, transform.rotation);
         }
     }
@@ -251,6 +258,9 @@ public class Player : MonoBehaviourPunCallbacks
     {
         isViewingOther = !isViewingOther;
 
+        // RPC 호출 추가
+        photonView.RPC("RPC_ToggleView", RpcTarget.Others, isViewingOther);
+
         if (isViewingOther)
         {
             // 다른 플레이어 찾기
@@ -282,10 +292,24 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void SyncViewToggle(bool isViewing)
+    private void RPC_ToggleView(bool isViewing)
     {
         isViewingOther = isViewing;
-    }
 
+        if (isViewingOther)
+        {
+            // 상대 플레이어의 카메라를 내 캐릭터로 변경
+            playerCamera.transform.SetParent(this.transform);
+            playerCamera.transform.localPosition = new Vector3(cameraXOffset, cameraYOffset, cameraZOffset);
+            playerCamera.transform.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            // 카메라를 원래대로 복귀
+            playerCamera.transform.SetParent(otherPlayer.transform);
+            playerCamera.transform.localPosition = new Vector3(cameraXOffset, cameraYOffset, cameraZOffset);
+            playerCamera.transform.localRotation = Quaternion.identity;
+        }
+    }
 
 }

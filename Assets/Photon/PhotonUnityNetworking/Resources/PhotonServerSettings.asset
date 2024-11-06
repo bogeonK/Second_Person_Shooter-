@@ -54,6 +54,10 @@ MonoBehaviour:
   - ToggleViewOnAllClients
   - ExecuteToggleViewOnAllClients
   - UpdateCameraRotation
+  - SetCameraRotation
+  - SyncCameraRotation
+  - SyncCameraRotationX
+  - RPC_ToggleView
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
