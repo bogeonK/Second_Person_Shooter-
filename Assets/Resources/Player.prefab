@@ -1469,7 +1469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPref: {fileID: 4846551088094795293, guid: 5e622a1433dccdc4e868c3cace06c709, type: 3}
-  firePower: 8
+  firePower: 10
   firePoint: {fileID: 3166669508300954023}
   fireDelay: 0.2
   muzzleFlashPrefab: {fileID: 0}
