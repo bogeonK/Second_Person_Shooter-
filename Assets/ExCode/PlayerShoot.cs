@@ -41,6 +41,7 @@ public class PlayerShoot : MonoBehaviour
         // 마우스 좌클릭을 누르는 순간, 발사 중이 아니고 내 캐릭터일 때만
         if (Input.GetMouseButtonDown(0) && !isFiring && pv.IsMine)
         {
+            AudioManager.instance.Audio_Click(1); // 슈팅 효과음
             // 발사 코루틴 시작
             StartCoroutine(FireBulletWithDelay());
         }

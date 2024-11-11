@@ -129,6 +129,14 @@ public class Player : MonoBehaviourPunCallbacks
         // 이동하는 속도를 velocity 변수에 할당해 애니메이션 전환
         anim.SetFloat("velocity", dir.magnitude);
 
+        // 이동하고 있고, 점프하지 않을 때 이동 효과음 재생
+        if (dir.magnitude > 0 && !anim.GetBool("isJump"))
+        {
+            AudioManager.instance.Audio_Walk(true);
+        }
+        // 이동을 멈추거나 점프하면 이동 효과음 재생 중지
+        else AudioManager.instance.Audio_Walk(false);
+
         // Space 키를 누를 때, 점프한 횟수가 2회 미만
         if (Input.GetKey(KeyCode.Space) && jumpCount < 2)
         {

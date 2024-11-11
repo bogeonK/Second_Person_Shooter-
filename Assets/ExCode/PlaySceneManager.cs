@@ -12,6 +12,8 @@ public class PlaySceneManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        AudioManager.instance.PlayBGM(1); // PlayScene BGM 재생
+
         // 현재 방에 참여한 플레이어 인원
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 

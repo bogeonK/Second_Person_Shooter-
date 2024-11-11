@@ -27,6 +27,8 @@ public class Lobby : MonoBehaviourPunCallbacks  // 포톤 관련 콜백 함수를 사용하�
     // 생성 버튼 누르면 호출
     void OnClickCreate()
     {
+        AudioManager.instance.Audio_Click(0); // 클릭 효과음
+
         // 방 이름 입력란이 비어있다면 함수 탈출하여 아래 코드 실행 불가
         if (roomNameInput.text == "") return;
 
@@ -48,6 +50,8 @@ public class Lobby : MonoBehaviourPunCallbacks  // 포톤 관련 콜백 함수를 사용하�
     // 참가 버튼 누르면 호출
     void OnClickJoin(string roomName)
     {
+        AudioManager.instance.Audio_Click(0); // 클릭 효과음
+
         // 중복 클릭을 방지하기 위해 버튼 비활성화
         ButtonOnOff(false);
 
